@@ -83,14 +83,45 @@ class TestHTMLNode(unittest.TestCase):
     def test_delimiter1(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
         split_node = split_nodes_delimiter([node], "`", TextType.CODE)
-        self.assertEqual(split_node, [TextNode("This is text with a", TextType.TEXT, None), TextNode("code block", TextType.CODE, None), TextNode( "word", TextType.TEXT, None)])
+        self.assertEqual(split_node, [TextNode("This is text with a ", TextType.TEXT, None), TextNode("code block", TextType.CODE, None), TextNode( " word", TextType.TEXT, None)])
 
+
+    def test_delimiter2(self):
+        node = TextNode("This is text with a **code block** word", TextType.TEXT)
+        split_node = split_nodes_delimiter([node], "**", TextType.BOLD)
+        self.assertEqual(split_node, [TextNode("This is text with a ", TextType.TEXT, None), TextNode("code block", TextType.BOLD, None), TextNode( " word", TextType.TEXT, None)])
+
+    def test_delimiter3(self):
+        node = TextNode("**This** is text with a **code block** word", TextType.TEXT)
+        split_node = split_nodes_delimiter([node], "**", TextType.BOLD)
+        self.assertEqual(split_node, [TextNode("This", TextType.BOLD, None), TextNode(" is text with a ", TextType.TEXT, None), TextNode("code block", TextType.BOLD, None), TextNode( " word", TextType.TEXT, None)])
+
+    def test_delimiter4(self):
+        node = TextNode("**This** **is** **text** **with** **a** **code** **block** **word**", TextType.TEXT)
+        split_node = split_nodes_delimiter([node], "**", TextType.BOLD)
+        self.assertEqual(split_node, [TextNode("This", TextType.BOLD, None), TextNode("is", TextType.BOLD, None), TextNode("text", TextType.BOLD, None), TextNode("with", TextType.BOLD, None), 
+                                      TextNode("a", TextType.BOLD, None), TextNode("code", TextType.BOLD, None), TextNode("block", TextType.BOLD, None), TextNode("word", TextType.BOLD, None)])
     
+    def test_delimiter5(self):
+        node = TextNode("This is text with a **code** block word", TextType.BOLD)
+        split_node = split_nodes_delimiter([node], "**", TextType.BOLD)
+        self.assertEqual(split_node, [TextNode("This is text with a **code** block word", TextType.BOLD)])
 
+    def test_delimiter_exception(self):
+        node = TextNode("This is text with a `code block** word", TextType.TEXT)
 
+        with self.assertRaises(Exception) as context:
+            split_nodes_delimiter([node], "`", TextType.CODE)
 
+        self.assertEqual(str(context.exception), "invalid markdown syntax")
 
+    def test_delimiter_exception1(self):
+        node = TextNode("This is text with a `code block** word", TextType.TEXT)
 
+        with self.assertRaises(Exception) as context:
+            split_nodes_delimiter([node], "_", TextType.CODE)
+
+        self.assertEqual(str(context.exception), "invalid markdown syntax")
 
     
 if __name__ == "__main__":
