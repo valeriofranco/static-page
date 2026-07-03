@@ -7,11 +7,11 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
     for node in old_nodes:
         if node.text_type != TextType.TEXT:
             new_nodes.append(node)
-            break
+            continue
 
         #check if right amount of delimiters
         split_node = node.text.split(delimiter)
-        if len(split_node) % 2 == 0 or delimiter not in node.text:
+        if len(split_node) % 2 == 0:
             raise Exception("invalid markdown syntax")
 
         #append list of TextNode either as text or as chosen TextType
