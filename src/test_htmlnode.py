@@ -4,6 +4,8 @@ from textnode import TextNode,text_node_to_html_node,TextType
 from delimiter import split_nodes_delimiter
 from extract_image import extract_markdown_images,extract_markdown_links
 from split import split_nodes_link,split_nodes_image
+from markdown_text import markdown_to_blocks
+from blocks import block_to_block_type,BlockType
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -302,8 +304,133 @@ class TestHTMLNode(unittest.TestCase):
         ],
         new_nodes,
         )
-    
+        #markdown_text tests
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
 
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+            
+    def test_markdown_to_blocks1(self):
+        md = """
+This is **bolded** paragraph
+
+
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+    
+    def test_markdown_to_blocks2(self):
+        md = """
+This is **bolded** paragraph                     
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+This is the same paragraph on a new line                      
+
+- This is a list
+- with items                  
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+    #Blocktype tests
+    def test_blocktypes(self):
+        block = """
+! System reboot required
+! Please save your work
+! Shutdown in 5 minutes
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.PARAGRAPH)
+
+    def test_blocktypes1(self):
+        block = """
+- System reboot required
+- Please save your work
+- Shutdown in 5 minutes
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.UNORDERED_LIST)
+
+    def test_blocktypes2(self):
+        block = """
+* System reboot required
+- Please save your work
+- Shutdown in 5 minutes
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.PARAGRAPH)
+
+    def test_blocktypes3(self):
+        block = """
+1. System reboot required
+2. Please save your work
+3. Shutdown in 5 minutes
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.ORDERED_LIST)
+
+    def test_blocktypes4(self):
+        block = """
+1. System reboot required
+2. Please save your work
+5. Shutdown in 5 minutes
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.PARAGRAPH)
+    
+    def test_blocktypes5(self):
+        block = """
+#### My beloved heading
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.HEADING)
+
+    def test_blocktypes6(self):
+        block = """
+```
+#### My beloved heading
+this is code
+```
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.CODE)
     
 if __name__ == "__main__":
     unittest.main()
