@@ -54,11 +54,3 @@ def block_to_block_type(text_block):
 
     return result
         
-
-block = """
-```
-x = 1 + 1
-print(x)
-```
-"""
-print(block_to_block_type(block))

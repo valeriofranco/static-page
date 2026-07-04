@@ -431,6 +431,33 @@ this is code
 """
         blocktype = block_to_block_type(block)
         self.assertAlmostEqual(blocktype, BlockType.CODE)
+
+    def test_blocktypes7(self):
+        block = """
+```
+#### My beloved heading
+this is code
+``
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.PARAGRAPH)
     
+    def test_blocktypes8(self):
+        block = """
+### My beloved heading
+this is code
+``
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.PARAGRAPH)
+
+    def test_blocktypes9(self):
+        block = """
+####### My beloved heading
+"""
+        blocktype = block_to_block_type(block)
+        self.assertAlmostEqual(blocktype, BlockType.PARAGRAPH)
+
+        
 if __name__ == "__main__":
     unittest.main()
