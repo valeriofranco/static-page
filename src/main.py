@@ -6,7 +6,7 @@ def main():
     if sys.argv == "":
         basepath = "/"
     else:
-        basepath = sys.argv[0]
+        basepath = sys.argv[1]
     delete_content_destination("docs")
     copy_files("static","docs")
     generate_pages_recursive("content","template.html","docs",basepath)
