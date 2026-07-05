@@ -40,8 +40,10 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
     new_nodes: list[TextNode] = []
     for node in old_nodes:
         if node.text == "":
-            pass
-
+            continue
+        if node.text_type != TextType.TEXT:
+            new_nodes.append(node)
+            continue
 
         if extract_markdown_links(node.text) == []:
             new_nodes.append(node)
@@ -54,11 +56,9 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
             temp_list = remaining_text.split(f"[{link_text[i][0]}]({link_text[i][1]})",1)
             if len(temp_list) > 1:
                 remaining_text = temp_list[1]
-            if temp_list[0] == "":
-                continue
-            
-            new_node.append(temp_list[0])
-            new_node.append((link_text[i][0],link_text[i][1]))
+            if temp_list[0] != "":
+                new_node.append(temp_list[0])
+            new_node.append((link_text[i][0], link_text[i][1]))
             
         if temp_list[1] != "":
             new_node.append(temp_list[1])

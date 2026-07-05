@@ -2,15 +2,14 @@
 
 
 def markdown_to_blocks(markdown):
-    result = []
-    lines = markdown.split("\n\n")
-    
-    for line in lines:
-        if line.strip() == "":
+    blocks = markdown.split("\n\n")
+    filtered_blocks = []
+    for block in blocks:
+        if block == "":
             continue
-        result.append(line.strip())
-
-    return result
+        block = block.strip()
+        filtered_blocks.append(block)
+    return filtered_blocks
 
 
 
