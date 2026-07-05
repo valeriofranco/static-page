@@ -107,13 +107,14 @@ def quote_to_html_node(block: str) -> ParentNode:
     children = text_to_children(content)
     return ParentNode("blockquote", children)
 
-md = """
-This is **bolded** paragraph
-text in a p
-tag here
 
-This is another paragraph with _italic_ text and `code` here
+def extract_title(markdown):
+    allmighty_node = markdown_to_html_node(markdown)
+    for child in allmighty_node.children:
+        if child.tag ==  "h1":
+            return child.children[0].value
+           
+    raise Exception("no title heading found")
 
-"""
 
-markdown_to_html_node(md)
+
