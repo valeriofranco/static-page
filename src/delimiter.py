@@ -29,6 +29,5 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
 
 
 
-node = TextNode("This is text with a `code block` word", TextType.BOLD)
-split_nodes_delimiter([node], "`", TextType.CODE)
+
 

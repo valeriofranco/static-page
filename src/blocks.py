@@ -12,7 +12,6 @@ class BlockType(Enum):
 
 
 def block_to_block_type(text_block):
-    print(text_block)
     text_lines = text_block.split("\n")
     new_lines = []
     for line in text_lines:
